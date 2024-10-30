@@ -1,0 +1,42 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+  <div class="bg-white rounded-lg shadow-md p-4 max-w-md mx-auto">
+    <h1 class="text-2xl font-bold mb-4">
+      {% if post %}
+        Edit Post
+      {% else %}
+        Create Post
+      {% endif %}
+    </h1>
+    <form action="{% if post %}{% url 'posts:post_update' post.id %}{% else %}{% url 'posts:post_create' %}{% endif %}" method="post">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="title" class="block font-bold mb-2">Title:</label>
+        <input type="text" name="title" id="title" value="{% if post %}{{ post.title }}{% endif %}" class="border border-gray-300 rounded p-2 w-full" required>
+      </div>
+      <div class="mb-4">
+        <label for="content" class="block font-bold mb-2">Content:</label>
+        <textarea name="content" id="content" rows="5" class="border border-gray-300 rounded p-2 w-full" required>{% if post %}{{ post.content }}{% endif %}</textarea>
+      </div>
+      <div class="mb-4">
+        <label for="category" class="block font-bold mb-2">Category:</label>
+        <select name="category" id="category" class="border border-gray-300 rounded p-2 w-full" required>
+          <option value="">Select a category</option>
+          {% for category in categories %}
+            <option value="{{ category.id }}" {% if post and post.category.id == category.id %}selected{% endif %}>
+              {{ category.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        {% if post %}
+          Update
+        {% else %}
+          Create
+        {% endif %}
+      </button>
+    </form>
+  </div>
+{% endblock %}

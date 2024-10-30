@@ -1,0 +1,41 @@
+{% extends 'posts/base.html' %}
+
+{% block content %}
+  <div class="bg-white rounded-lg shadow-md p-4">
+    <h1 class="text-2xl font-bold">{{ post.title }}</h1>
+    <p class="text-gray-600">{{ post.author.username }} - {{ post.created_at|date:'M d, Y' }}</p>
+    <p>{{ post.content }}</p>
+    <div class="mt-4">
+      <a href="{% url 'posts:post_upvote' post.id %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
+        Upvote ({{ post.upvotes.count }})
+      </a>
+      <a href="{% url 'posts:post_downvote' post.id %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        Downvote ({{ post.downvotes.count }})
+      </a>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-md p-4 mt-4">
+    <h2 class="text-xl font-bold mb-4">Comments</h2>
+    {% for comment in comments %}
+      <div class="border-b border-gray-200 pb-4 mb-4">
+        <p class="font-bold">{{ comment.author.username }}</p>
+        <p>{{ comment.content }}</p>
+        <p class="text-gray-600">{{ comment.created_at|date:'M d, Y' }}</p>
+        {% if comment.author == request.user %}
+          <a href="{% url 'posts:comment_delete' post.id comment.id %}" class="text-red-500 hover:text-red-700">Delete</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <form action="{% url 'posts:comment_create' post.id %}" method="post" class="mt-4">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="content" class="block font-bold mb-2">Add a comment:</label>
+        <textarea name="content" id="content" rows="3" class="border border-gray-300 rounded p-2 w-full"></textarea>
+      </div>
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Submit
+      </button>
+    </form>
+  </div>
+{% endblock %}
