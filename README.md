@@ -1,6 +1,6 @@
 ![image](https://github.com/user-attachments/assets/b03c7bf3-1959-4f3f-8b73-5a1874fb20e1)
 
-# Redit clone Practise for Project 4
+# Reddit clone Practise for Project 4
 
 ## Getting Started 
 
