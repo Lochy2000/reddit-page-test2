@@ -16,7 +16,7 @@ def post_detail(request, post_id):
     comments = post.comments.filter(parent=None)  # Get only top-level comments
     return render(request, 'posts/post_detail.html', {
         'post': post,
-        'comments': comments
+        'comments': post.comments.filters(parent=None)
     })
 
 @login_required
@@ -25,26 +25,55 @@ def post_create(request):
         title = request.POST['title']
         content = request.POST['content']
         category_id = request.POST['category']
-        post = Post.objects.create(
-            title=title,
-            content=content,
-            author=request.user,
-            category_id=category_id
-        )
-        return redirect('posts:post_detail', post_id=post.id)
+
+        if not all([title, content, category_id]):
+            messages.error(request, "Please fill in all fields.")
+            return redirect("posts:post_create")
+
+        try: 
+            category = Category.objects.get(id=category_id)
+            post = Post.objects.create(
+                title=title,
+                content=content,
+                author=request.user,
+                category_id=category_id
+            )
+            messages.success(request,"Post created successfully!")
+            return redirect('posts:post_detail', post_id=post.id)
+        except Category.DoesNotExist:
+            messages.error(request, "Invalid category selected.")
+            return redirect('posts:post_create')
 
     categories = Category.objects.all()
     return render(request, 'posts/post_form.html', {'categories': categories})
 
 @login_required
-def post_update(request, post_id):
+def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+
+    #check that user is the author
+    if request.user != post.author:
+        messages.error(request, "You can't edit this post.")
+        return redirect ("posts:post_detail", post_id=post.id)
+
     if request.method == 'POST':
-        post.title = request.POST['title']
-        post.content = request.POST['content']
-        post.category_id = request.POST['category']
-        post.save()
-        return redirect('posts:post_detail', post_id=post.id)
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category_id = request.POST.get('category')
+
+        if not all ([title, content, category_id]):
+            messages.error(request, "Please fill all fields.")
+        else:
+            try:
+                category = Category.objects.get(id=category_id)
+                post.title = title
+                post.content = content
+                post.category = category
+                post.save()
+                messages.success(request, "Post update successfully!")
+                return redirect("post:post_detail", post_id=post.id)
+            except Category.DoesNotExist:
+                messages.error(request,"Invalid category selected")
 
     categories = Category.objects.all()
     return render(request, 'posts/post_form.html', {
@@ -55,8 +84,17 @@ def post_update(request, post_id):
 @login_required
 def post_delete(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    post.delete()
-    return redirect('posts:post_list')
+
+    if request.user != post.author:
+        messages.error(request, "You cannot delete this post.")
+        return redirect("posts:post_detais", post_id=post.id)
+    
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request,"Post deleted successfully!")
+        return redirect('posts:post_list')
+    
+    return render(request, "post/post_confirm_deleted.html", {"post": post})
 
 @login_required
 def comment_create(request, post_id):
