@@ -1,41 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reddit Clone</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gray-100">
   <nav class="bg-white shadow-md py-4">
     <div class="container mx-auto flex justify-between items-center">
       <a href="{% url 'posts:post_list' %}" class="text-2xl font-bold">Reddit Clone</a>
       <div>
         {% if user.is_authenticated %}
-          <a href="{% url 'posts:post_create' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Create Post
-          </a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">
-            {{ user.username }}
-          </a>
-          <a href="#" class="text-gray-600 hover:text-gray-800">
-            Logout
-          </a>
+        <span class="mr-4">Welcome, {{ user.username }}</span>
+        <a href="{% url 'posts:post_create' %}"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+          Create Post
+        </a>
+        <a href="{% url 'accounts:logout' %}"
+          class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+          Logout
+        </a>
         {% else %}
-          <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Login
-          </a>
-          <a href="#" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
-            Register
-          </a>
+        <a href="{% url 'accounts:login' %}"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+          Login
+        </a>
+        <a href="{% url 'accounts:register' %}"
+          class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+          Register
+        </a>
         {% endif %}
       </div>
     </div>
   </nav>
+
+  {% if messages %}
+  <div class="container mx-auto mt-4">
+    {% for message in messages %}
+    <div
+      class="bg-{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% else %}blue{% endif %}-100 border border-{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% else %}blue{% endif %}-400 text-{% if message.tags == 'success' %}green{% elif message.tags == 'error' %}red{% else %}blue{% endif %}-700 px-4 py-3 rounded relative" role="alert">
+          <span class=" block sm:inline"> {{ message }} </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   <div class="container mx-auto my-8">
     {% block content %}
     {% endblock %}
   </div>
 </body>
+
 </html>
