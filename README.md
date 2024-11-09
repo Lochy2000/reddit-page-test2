@@ -77,6 +77,21 @@ python manage.py startapp posts
   ![image](https://github.com/user-attachments/assets/cc817e3b-4692-45f4-ab39-36881763997d)
 
 
+## Adding Function
+Once the basic layout was created the next step was to setup some functionality. Following the full CRUD (Cread, Read, Update and Delete).
+
+### Updating posts / view.py to render all the HTML templates.
+
+#### Post_list
+* Access posts data base using Post.objects.all()
+* Ordered posts by creation newest date using order_by('-created_at')
+* Rendered post_list.html template
+* Made posts and categories avaliable in template aswell.
+
+![image](https://github.com/user-attachments/assets/cdd4bd87-5f15-4518-a6b9-02f4e3b49832)
+
+
+
 
 
 
