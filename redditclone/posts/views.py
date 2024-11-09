@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages 
+from django.views.generic import DeleteView
+from django.urls import reverse_lazy
 from .models import Post, Category, Comment
 
 # Create your views here.
@@ -16,7 +19,7 @@ def post_detail(request, post_id):
     comments = post.comments.filter(parent=None)  # Get only top-level comments
     return render(request, 'posts/post_detail.html', {
         'post': post,
-        'comments': post.comments.filters(parent=None)
+        'comments': post.comments.filter(parent=None)
     })
 
 @login_required
@@ -94,7 +97,7 @@ def post_delete(request, post_id):
         messages.success(request,"Post deleted successfully!")
         return redirect('posts:post_list')
     
-    return render(request, "post/post_confirm_deleted.html", {"post": post})
+    return render(request, "posts/post_confirm_delete.html", {"post": post})
 
 @login_required
 def comment_create(request, post_id):
@@ -161,3 +164,4 @@ def post_downvote(request, post_id):
     post.downvotes.add(request.user)
     post.upvotes.remove(request.user)
     return redirect('posts:post_detail', post_id=post.id)
+

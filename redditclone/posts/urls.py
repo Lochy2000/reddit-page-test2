@@ -17,4 +17,5 @@ urlpatterns = [
     path('category/<int:category_id>/delete/', views.category_delete, name='category_delete'),
     path('post/<int:post_id>/upvote/', views.post_upvote, name='post_upvote'),
     path('post/<int:post_id>/downvote/', views.post_downvote, name='post_downvote'),
+    path('post/<int:post_id>/delete/', views.DeleteView.as_view(), name='post_delete'),
 ]

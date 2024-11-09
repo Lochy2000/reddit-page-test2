@@ -10,8 +10,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title','author', 'category', 'create_at')
-    list_filter = ('category', 'create_at')
+    list_display = ('title','author', 'category', 'created_at')
+    list_filter = ('category', 'created_at')
     search_fields = ('title', 'content')
 
 @admin.register(Comment)
