@@ -25,6 +25,7 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     if request.method == 'POST':
+        print("FILES in request:", request.FILES)
         title = request.POST['title']
         content = request.POST['content']
         category_id = request.POST['category']
@@ -49,11 +50,13 @@ def post_create(request):
 
             # Debug message
             print(f"Post created with image: {post.image}")
+            print(f"Post image path:{post.image.path if post.image else 'no image'}")
 
             messages.success(request,"Post created successfully!")
             return redirect('posts:post_detail', post_id=post.id)
-        except Category.DoesNotExist:
-            messages.error(request, "Invalid category selected.")
+        except Exception as e:  # Catch any errors
+            print(f"Error creating post: {str(e)}")  # Debug print
+            messages.error(request, f"Error creating post: {str(e)}")
             return redirect('posts:post_create')
 
     categories = Category.objects.all()
