@@ -28,6 +28,10 @@ def post_create(request):
         title = request.POST['title']
         content = request.POST['content']
         category_id = request.POST['category']
+        image = request.FILES.get('image') #added images to post
+
+          # Check if image is being received
+        print(f"Image received: {image}")
 
         if not all([title, content, category_id]):
             messages.error(request, "Please fill in all fields.")
@@ -39,8 +43,13 @@ def post_create(request):
                 title=title,
                 content=content,
                 author=request.user,
-                category_id=category_id
+                category_id=category_id,
+                image=image
             )
+
+            # Debug message
+            print(f"Post created with image: {post.image}")
+
             messages.success(request,"Post created successfully!")
             return redirect('posts:post_detail', post_id=post.id)
         except Category.DoesNotExist:
@@ -60,9 +69,10 @@ def post_edit(request, post_id):
         return redirect ("posts:post_detail", post_id=post.id)
 
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        category_id = request.POST.get('category')
+        title = request.POST.get['title']
+        content = request.POST.get['content']
+        category_id = request.POST.get['category']
+        image = request.FIELS.get['image']
 
         if not all ([title, content, category_id]):
             messages.error(request, "Please fill all fields.")
@@ -72,6 +82,8 @@ def post_edit(request, post_id):
                 post.title = title
                 post.content = content
                 post.category = category
+                if image:
+                    post.image = image
                 post.save()
                 messages.success(request, "Post update successfully!")
                 return redirect("post:post_detail", post_id=post.id)

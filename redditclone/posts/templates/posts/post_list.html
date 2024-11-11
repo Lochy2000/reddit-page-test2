@@ -4,6 +4,7 @@
 {% block content %}
 <div class="grid grid-cols-4 gap-4">
     <div class="col-span-3">
+        <!-- Post -->
         {% for post in posts %}
             <div class="bg-white rounded-lg shadow-md p-4 mb-4">
                 <h2 class="text-xl font-bold">
@@ -28,7 +29,12 @@
                 <p>No posts yet.</p>
             </div>
         {% endfor %}
+            <!-- Image -->
+    <div class="mt-4">
+        <img src="{{ post.image.url }}" alt="Post image" class="max-w-full rounded-lg shadow-md">
     </div>
+    </div>
+    <!-- Category -->
     <div class="col-span-1">
         <div class="bg-white rounded-lg shadow-md p-4">
             <h3 class="text-lg font-bold mb-2">Categories</h3>
@@ -43,5 +49,6 @@
             </ul>
         </div>
     </div>
+
 </div>
 {% endblock %}

@@ -5,6 +5,27 @@
     <h1 class="text-2xl font-bold">{{ post.title }}</h1>
     <p class="text-gray-600">{{ post.author.username }} - {{ post.created_at|date:'M d, Y' }}</p>
     <p>{{ post.content }}</p>
+    <!--Image-->
+    {% if post.image %}
+    <div class="mt-4">
+        <img src="{{ post.image.url }}" alt="Post image" class="max-w-full rounded-lg shadow-md">
+    </div>
+    {% else %}
+      <p class="text-gray-500 mt-4">No image uploaded</p>
+    {% endif %}
+        <!-- For debugging -->
+        {% if debug %}
+        <div class="mt-4 p-4 bg-gray-100 rounded">
+            <p>Debug Info:</p>
+            <p>Image field: {{ post.image }}</p>
+            <p>Image URL: {{ post.image.url }}</p>
+        </div>
+        {% endif %}
+    
+        <div class="mt-4">
+            {{ post.content }}
+        </div>
+
     <div class="mt-4">
       <a href="{% url 'posts:post_upvote' post.id %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
         Upvote ({{ post.upvotes.count }})
@@ -14,6 +35,7 @@
       </a>
     </div>
   </div>
+
 
   <div class="bg-white rounded-lg shadow-md p-4 mt-4">
     <h2 class="text-xl font-bold mb-4">Comments</h2>
@@ -38,4 +60,6 @@
       </button>
     </form>
   </div>
+
+
 {% endblock %}
