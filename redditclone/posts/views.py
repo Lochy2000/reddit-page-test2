@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
+from django.db.models import Count
 from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 from .models import Post, Category, Comment
@@ -9,9 +10,41 @@ from .models import Post, Category, Comment
 def post_list(request):
     posts = Post.objects.all().order_by('-created_at')
     categories = Category.objects.all()
+
+# Top post
+    
+    #top_posts = Post.objects.annotate(
+    #    vote_score=models.Count('upvotes') - models.Count('downvotes')
+    #).order_by('-vote_score')[:3]
+
+    #top_posts = sorted (
+    #   Post.objects.all (),
+    #  key=lambda post: post.vote_score,
+    # reverse=True
+    #)[:3]
+
+    #all_posts = Post.objects.all()
+    #print("Number of total Posts:", all_posts.count())
+
+    #top_posts = []
+    #for post in all_posts:
+        #upvotes = post.upvotes.count()
+        #downvotes = post.downvotes.count()
+        #score = upvotes - downvotes
+        #print(f"Post  '{post.title}' has score: {score} (upvotes: {upvotes}, downvotes: {downvotes})")
+        #top_posts.append(post)
+
+    #top_posts = sorted(top_posts, key =lambda x:x.vote_score, reverse=True)[3]
+    #print("Top posts after sorting:", [(post.title, post.vote_score) for post in top_posts])
+
+    top_posts = Post.objects.annotate(
+        total_score=Count('upvotes') - Count('downvotes')
+    ).order_by('-total_score')[:5]
+
     return render(request, 'posts/post_list.html', {
         'posts': posts,
-        'categories': categories
+        'categories': categories,
+        'top_posts': top_posts
     })
 
 def post_detail(request, post_id):

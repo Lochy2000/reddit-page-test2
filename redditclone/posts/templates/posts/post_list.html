@@ -48,7 +48,33 @@
                 {% endfor %}
             </ul>
         </div>
+<br>
+    <!-- Top upvotes posts -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-bold mb-2">Top Posts</h3>
+            <ul>
+                {% if post.id %}
+                    {% for posts in top_posts %}
+                    
+                        <li class="mb-3 pb-2-border-b border-gray-200 last:border-0">
+                            <a href="{% url 'posts:post_detail' post.id %}" class="text-blue-500 hover:text-blue-700 font-medium">
+                                {{ post.title }}
+                            </a>
+                            <div class="text-sm text-grey-600">
+                            Upvotes {{ post.upvotes.count }}
+                            <br>
+                            Score: {{ post.total_score }} 
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="text-blue-500"> No posts yet</li>
+                {% endif%}
+            </ul>
+        </div>
+
     </div>
+
 
 </div>
 {% endblock %}
